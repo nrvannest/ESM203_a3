@@ -1,0 +1,71 @@
+---
+title: "California Groundwater Report"
+author: "Nikole Vannest"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = F, warning = F)
+
+library(tidyverse)
+library(here)
+library(kableExtra)
+
+gw_change <- read.table(here("data", "Change_gw_storage.txt"), sep = "\t", header = T)
+
+inout_change <- read.table(here("data", "Change_gw_inout.txt"), sep = "\t", header = T)
+```
+
+## Introduction
+
+With an increasing human population in California, there is an accumulating demand for water. Ground water storage is limited, with a steady input from surface water recharge and other sources each year. However with an exponential increase in population, and a fininte amount of water to draw from, California will eventually run out of water. 
+
+
+## Data Analysis
+
+**Table 1** Initial groundwater inflow, outflow and change in that year for the state of California. Data: Curmi et. al. (2013) 
+```{r, fig.align='center'}
+first_last_tbl <- data.frame("Year" = c(2000, 2050),
+                             "Inflow" = c(12.8, 10.3),
+                             "Outflow" = c(18.2, 27),
+                             "Change" = c(-5.4, -16.7))
+
+kable(first_last_tbl, format = "html") %>% 
+  kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
+
+## Data Visualization
+
+
+```{r, fig.align='center'}
+inout_change %>% 
+  ggplot(aes(x = year)) +
+  geom_line(aes(y = in.), color = "blue") +
+  geom_line(aes(y = out), color = "magenta") +
+  labs(x = "Year",
+       y = "Water per m^3^",
+       title = "CA groundwater inflow and outflow projection 2000-2050")
+
+
+```
+
+**Figure 1.** Linear trend of modelled input and output of CA groundwater from 2000-2050. Initial groundwater input
+
+```{r, fig.align='center'}
+gw_change %>% 
+  ggplot(aes(x = year)) +
+  geom_line(aes(y = Medium.scenario), color = "blue")  +
+  geom_ribbon(aes(ymin = Low.scenario,
+                  ymax = High.scenario),
+              alpha = 0.3, fill = "blue") +
+  labs(x = "Year",
+       y = "Groundwater storage m^3^",
+       title = "Change in CA Groundwater Storage from 2000-2050")
+```
+
+**Figure 2.** Change in California groundwater between 2000-2050. Blue line indicates the mean projected trend, with the shaded region representing 90% confidence value. 
+
+## Summary
+
+## Citations
